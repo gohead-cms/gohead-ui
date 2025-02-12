@@ -7,7 +7,8 @@ import {
     CreateParams,
     CreateResult,
 } from "react-admin";
-import config from "./config";
+
+import config from "../config"
 
 const httpClient = (url: string, options: fetchUtils.Options = {}) => {
     const token = localStorage.getItem("token");
@@ -57,13 +58,21 @@ const customDataProvider: DataProvider = {
 
     getOne: (resource, params) => {
         const url = `${getBaseUrl(resource)}/${resource}/${params.id}`;
-        return httpClient(url).then(({ json }) => ({ data: json }));
+
+        return httpClient(url).then(({ json }) => {
+            if (!json || !json.data) {
+                console.error("Invalid getOne response format:", json);
+                throw new Error("Invalid response format from API");
+            }
+
+            return { data: json.data };
+        });
     },
 
     getMany: (resource, params) => {
         const requests = params.ids.map((id) =>
             httpClient(`${getBaseUrl(resource)}/${resource}/${id}`).then(
-                ({ json }) => json
+                ({ json }) => json.data
             )
         );
         return Promise.all(requests).then((data) => ({ data }));

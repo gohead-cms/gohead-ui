@@ -1,37 +1,23 @@
 import {
   Admin,
   Resource,
-  ListGuesser,
   EditGuesser,
-  ShowGuesser,
 } from "react-admin";
-import { Layout } from "./Layout";
-import dataProvider from "./dataProvider";
+import dataProvider from "./dataProviders/dataProvider";
 import { authProvider } from "./authProvider";
+import CustomLayout from "./layouts/Layout";
+import { CollectionList} from "./collections/CollectionsList";
+import Dashboard from "./dashboard/Dashboard";
 
 export const App = () => (
-  <Admin
-    layout={Layout}
+  <Admin 
     dataProvider={dataProvider}
     authProvider={authProvider}
+    layout={CustomLayout}
+    dashboard={Dashboard}
   >
-    <Resource
-      name="collections"
-      list={ListGuesser}
-      edit={EditGuesser}
-      show={ShowGuesser}
-    />
-    <Resource
-      name="single-types"
-      list={ListGuesser}
-      edit={EditGuesser}
-      show={ShowGuesser}
-    />
-    <Resource
-      name="components"
-      list={ListGuesser}
-      edit={EditGuesser}
-      show={ShowGuesser}
-    />
+    <Resource name="collections" list={CollectionList} edit={EditGuesser} show={CollectionList} />
   </Admin>
 );
+
+export default App;
